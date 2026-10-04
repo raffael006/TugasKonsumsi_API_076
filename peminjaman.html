@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Transaksi Peminjaman - Sistem Peminjaman</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon"><i class="fas fa-boxes"></i></div>
+                <div class="sidebar-brand-text mx-3">Peminjaman</div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html"><i
+                        class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span></a>
+            </li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Master Data</div>
+            <li class="nav-item">
+                <a class="nav-link" href="aset.html"><i class="fas fa-fw fa-box"></i><span>Master Asset</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="mahasiswa.html"><i class="fas fa-fw fa-users"></i><span>Master
+                        Mahasiswa</span></a>
+            </li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Transaksi</div>
+            <li class="nav-item active">
+                <a class="nav-link" href="peminjaman.html"><i
+                        class="fas fa-fw fa-handshake"></i><span>Peminjaman</span></a>
+            </li>
+        </ul>
+        <!-- End of Sidebar -->
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"></nav>
+                <div class="container-fluid">
+                    <h1 class="h3 mb-2 text-gray-800">Transaksi Peminjaman</h1>
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Riwayat Peminjaman</h6>
+                            <!-- Hanya CR: Tombol Tambah, tanpa edit/hapus -->
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalPinjam">
+                                <i class="fas fa-plus"></i> Buat Peminjaman
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID Transaksi</th>
+                                            <th>ID Mahasiswa</th>
+                                            <th>ID Aset</th>
+                                            <th>Tanggal Pinjam</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="peminjamanTableBody">
+                                        <tr>
+                                            <td colspan="5" class="text-center">Memuat data peminjaman...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Peminjaman -->
+    <div class="modal fade" id="modalPinjam" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Form Peminjaman Baru</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <form id="formPeminjaman">
+                    <div class="modal-body">
+                        <div class="form-group"><label>ID Mahasiswa</label><input type="number" class="form-control"
+                                id="id_mahasiswa" required></div>
+                        <div class="form-group"><label>ID Asset</label><input type="number" class="form-control"
+                                id="id_asset" required></div>
+                        <div class="form-group"><label>Jumlah Pinjam</label><input type="number" class="form-control"
+                                id="jumlah_pinjam" required></div>
+                        <div class="form-group"><label>Tanggal Pinjam</label><input type="date" class="form-control"
+                                id="tanggal_pinjam" required></div>
+                        <div class="form-group"><label>Tanggal Kembali</label><input type="date" class="form-control"
+                                id="tanggal_kembali" required></div>
+                        <div class="form-group"><label>Keterangan</label><input type="text" class="form-control"
+                                id="keterangan" required></div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select class="form-control" id="status_peminjaman" required>
+                                <option value="Pending">Pending</option>
+                                <option value="Dipinjam">Dipinjam</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Transaksi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <script>
+        async function loadPeminjaman() {
+            const tbody = document.getElementById('peminjamanTableBody');
+            try {
+                let response = await fetch('https://api.melangkah.my.id/peminjaman/read.php');
+                let data = await response.json();
+
+                tbody.innerHTML = '';
+
+                let listPeminjaman = data.data || data;
+                listPeminjaman.forEach(trx => {
+                    tbody.innerHTML += `
+                    <tr>
+                        <td>${trx.id_peminjaman}</td>
+                        <td>${trx.id_mahasiswa}</td>
+                        <td>${trx.id_asset}</td>
+                        <td>${trx.tanggal_pinjam}</td>
+                        <td>${trx.status_peminjaman}</td>
+                    </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Gagal memuat data:', error);
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Gagal memuat data peminjaman.</td></tr>`;
+            }
+        }
+
+        document.getElementById('formPeminjaman').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            let payload = {
+                id_mahasiswa: parseInt(document.getElementById('id_mahasiswa').value),
+                id_asset: parseInt(document.getElementById('id_asset').value),
+                jumlah: parseInt(document.getElementById('jumlah_pinjam').value),
+                tanggal_pinjam: document.getElementById('tanggal_pinjam').value,
+                tanggal_kembali: document.getElementById('tanggal_kembali').value,
+                keterangan: document.getElementById('keterangan').value,
+                status_peminjaman: document.getElementById('status_peminjaman').value
+            };
+
+            try {
+                await fetch('https://api.melangkah.my.id/peminjaman/create.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                $('#modalPinjam').modal('hide');
+                this.reset();
+                loadPeminjaman();
+            } catch (error) { console.error('Gagal menyimpan:', error); }
+        });
+
+        // Dipanggil sekali di bawah agar elemen HTML sudah dimuat seluruhnya
+        document.addEventListener('DOMContentLoaded', loadPeminjaman);
+    </script>
+</body>
+
+</html>

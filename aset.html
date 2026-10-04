@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Master Asset - Sistem Peminjaman</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon"><i class="fas fa-boxes"></i></div>
+                <div class="sidebar-brand-text mx-3">Peminjaman</div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html"><i
+                        class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span></a>
+            </li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Master Data</div>
+            <li class="nav-item active">
+                <a class="nav-link" href="aset.html"><i class="fas fa-fw fa-box"></i><span>Master Asset</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="mahasiswa.html"><i class="fas fa-fw fa-users"></i><span>Master
+                        Mahasiswa</span></a>
+            </li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Transaksi</div>
+            <li class="nav-item">
+                <a class="nav-link" href="peminjaman.html"><i
+                        class="fas fa-fw fa-handshake"></i><span>Peminjaman</span></a>
+            </li>
+        </ul>
+        <!-- End of Sidebar -->
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"></nav>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <h1 class="h3 mb-2 text-gray-800">Master Data Asset</h1>
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Daftar Asset</h6>
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalAset">
+                                <i class="fas fa-plus"></i> Tambah Aset
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Kode Aset</th>
+                                            <th>Nama Aset</th>
+                                            <th>Kategori</th>
+                                            <th>Jumlah</th>
+                                            <th>Kondisi</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="asetTableBody">
+                                        <tr>
+                                            <td colspan="6" class="text-center">Memuat data aset...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Aset -->
+    <div class="modal fade" id="modalAset" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Form Tambah Asset</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <form id="formAset">
+                    <div class="modal-body">
+                        <!-- Input hidden untuk menampung ID saat Edit -->
+                        <input type="hidden" id="aset_id">
+
+                        <div class="form-group"><label>Nama Aset</label><input type="text" class="form-control"
+                                id="nama_asset" required></div>
+                        <div class="form-group"><label>Kategori</label><input type="text" class="form-control"
+                                id="kategori" required></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" class="form-control"
+                                id="jumlah" required></div>
+                        <div class="form-group">
+                            <label>Kondisi</label>
+                            <select class="form-control" id="kondisi" required>
+                                <option value="Baik">Baik</option>
+                                <option value="Rusak">Rusak</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Lokasi</label><input type="text" class="form-control" id="lokasi"
+                                required></div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select class="form-control" id="status" required>
+                                <option value="Tersedia">Tersedia</option>
+                                <option value="Dipinjam">Dipinjam</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <script>
+        let globalAset = []; // Simpan data secara global untuk mempermudah fitur Edit
+
+        async function loadAset() {
+            const tbody = document.getElementById('asetTableBody');
+            try {
+                let response = await fetch('https://api.melangkah.my.id/asset/read.php');
+                let data = await response.json();
+                tbody.innerHTML = '';
+
+                globalAset = data.data || data;
+
+                globalAset.forEach(aset => {
+                    tbody.innerHTML += `
+                    <tr>
+                        <td>${aset.id}</td>
+                        <td>${aset.nama_asset}</td>
+                        <td>${aset.kategori}</td>
+                        <td>${aset.jumlah}</td>
+                        <td>${aset.kondisi}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editAset(${aset.id})">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="hapusAset(${aset.id})">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </td>
+                    </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Gagal memuat data:', error);
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Gagal memuat data aset.</td></tr>`;
+            }
+        }
+
+        function editAset(id) {
+            let aset = globalAset.find(a => a.id == id);
+            if (aset) {
+                document.getElementById('aset_id').value = aset.id;
+                document.getElementById('nama_asset').value = aset.nama_asset;
+                document.getElementById('kategori').value = aset.kategori;
+                document.getElementById('jumlah').value = aset.jumlah;
+                document.getElementById('kondisi').value = aset.kondisi;
+                if (aset.lokasi) document.getElementById('lokasi').value = aset.lokasi;
+                if (aset.status) document.getElementById('status').value = aset.status;
+
+                document.querySelector('#modalAset .modal-title').innerText = 'Edit Data Asset';
+                $('#modalAset').modal('show');
+            }
+        }
+
+        // Reset form setiap modal ditutup
+        $('#modalAset').on('hidden.bs.modal', function () {
+            document.getElementById('formAset').reset();
+            document.getElementById('aset_id').value = '';
+            document.querySelector('#modalAset .modal-title').innerText = 'Form Tambah Asset';
+        });
+
+        document.getElementById('formAset').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            let id = document.getElementById('aset_id').value;
+
+            let payload = {
+                nama_asset: document.getElementById('nama_asset').value,
+                kategori: document.getElementById('kategori').value,
+                jumlah: parseInt(document.getElementById('jumlah').value),
+                kondisi: document.getElementById('kondisi').value,
+                lokasi: document.getElementById('lokasi').value,
+                status: document.getElementById('status').value
+            };
+
+            if (id) payload.id = id;
+
+            let url = id ? 'https://api.melangkah.my.id/asset/update.php' : 'https://api.melangkah.my.id/asset/create.php';
+            let method = id ? 'PUT' : 'POST'; // Gunakan metode HTTP yang sesuai dengan pengaturan API Anda (sering kali update pakai PUT atau tetap POST ke update.php)
+
+            try {
+                await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                $('#modalAset').modal('hide');
+                this.reset();
+                loadAset();
+            } catch (error) { console.error('Gagal menyimpan:', error); }
+        });
+
+        async function hapusAset(id) {
+            if (confirm('Yakin ingin menghapus aset ini?')) {
+                try {
+                    await fetch('https://api.melangkah.my.id/asset/delete.php?id=' + id, { method: 'DELETE' });
+                    loadAset();
+                } catch (error) { console.error('Gagal menghapus:', error); }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAset);
+    </script>
+</body>
+
+</html>
